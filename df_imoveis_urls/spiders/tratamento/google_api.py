@@ -1,7 +1,4 @@
-import pandas as pd
-import numpy as np
 import os
-import re
 import requests
 from dotenv import load_dotenv
 
@@ -18,7 +15,3 @@ def get_address(latitude, longitude):
         return data['results'][0]['formatted_address']
     else:
         return "Endereço não encontrado"
-    
-# df["endereço"] = get_address(df["latitude"],df["longitude"])
-
-print(get_address("-15.841232", "-48.020674"))
