@@ -21,8 +21,10 @@ class ExtrairInfoSpider(scrapy.Spider):
             telefone_completo = " ".join(telefone_textos)
             telefone_formatado = re.sub(r"[^0-9()\-\s]", "", telefone_completo).strip()
 
+
             yield {
                 
+                "id_dfi": re.search(r'ID:\s*(\d+)', response.css("title::text").get()).group(1),
                 "cidade": response.css("h6:contains('Cidade:') small::text").get(default="Não encontrado").strip(),
                 "bairro": response.css("h6:contains('Bairro:') small::text").get(default="Não encontrado").strip(),
                 "endereco": response.css("h1.mb-0.font-weight-600.mobile-fs-1-5::text").get(default="Não encontrado").strip(),

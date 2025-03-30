@@ -58,6 +58,41 @@ df["telefone"] = df["telefone"].apply(limpar_telefones)
 
 
 
+# CARACTERISTICAS EM FORMATO DE LISTA
+
+def formatar_caracteristicas(texto):
+    if pd.isna(texto): 
+        return []
+    
+    lista_ordenada = sorted([item.strip() for item in texto.split(",")])
+    
+    return lista_ordenada
+
+df["características"] = df['características'].apply(formatar_caracteristicas)
+
+#print(df["características"].head(20))
+
+
+# TODAS AS CARACTERISTICAS DISPONÍVEIS
+
+todas_caracteristicas = set()
+
+for lista in df["características"]:
+    todas_caracteristicas.update(lista)
+
+todas_caracteristicas = sorted(todas_caracteristicas)
+
+#print(todas_caracteristicas)
+
+for caracteristica in todas_caracteristicas:
+    df[caracteristica] = df["características"].apply(lambda x: 1 if caracteristica in x else 0)
+
+df.drop(columns=["características"], inplace=True)
+
+print(df[todas_caracteristicas].head(10))
+
+
+
 # GOOGLE API (NÃO USAR PARA TESTAR COM O DATAFRAME INTEIRO)
 
 load_dotenv()
@@ -78,6 +113,6 @@ def get_address(latitude, longitude):
 latitude = df.loc[0, 'latitude']
 longitude = df.loc[0, 'longitude']
 
-endereco = (get_address(latitude, longitude))
+#endereco = (get_address(latitude, longitude))
 
-print (endereco) #Qnp 5 Cj O Lt 8 - s/n lt 8 - Ceilândia, Brasília - DF, 72240-421, Brazil
+#print (endereco) #Qnp 5 Cj O Lt 8 - s/n lt 8 - Ceilândia, Brasília - DF, 72240-421, Brazil
