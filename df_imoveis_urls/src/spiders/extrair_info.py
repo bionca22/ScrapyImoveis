@@ -1,6 +1,7 @@
 import scrapy
 import re
 import pandas as pd
+from pathlib import Path
 
 class ExtrairInfoSpider(scrapy.Spider):
 
@@ -12,8 +13,20 @@ class ExtrairInfoSpider(scrapy.Spider):
 
     allowed_domains = ["www.dfimoveis.com.br"]
     
-    df = pd.read_csv("./json_txt/links_imoveis.txt", header=None, names=["links"]) 
-    start_urls = df["links"].tolist()
+    ##df = pd.read_csv("../../data/raw/links_imoveis.txt", header=None, names=["links"]).tolist()
+    ##df = pd.read_csv("../../data/raw/links_imoveis.txt", header=None) 
+    ##start_urls = df[0].tolist()
+
+    ## with open("../../data/raw/links_imoveis.txt", "r") as f:
+    ##     start_urls = [url.strip() for url in f.readlines()]
+
+    BASE_DIR = Path(__file__).resolve().parent.parent.parent
+    DATA_DIR = BASE_DIR / "data" / "raw"
+    links_file = DATA_DIR / "links_imoveis.txt"
+
+# Leitura correta
+    with open(links_file, 'r') as f:
+        start_urls = [line.strip() for line in f]
 
     def parse(self, response):
             

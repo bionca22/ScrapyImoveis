@@ -2,14 +2,12 @@ import pandas as pd
 import numpy as np
 import os
 import re
-from google_api import get_address
-from processamento import limpar_area, limpar_telefones, expandir_caracteristicas
+from .google_api import get_address
+from .processamento import limpar_area, limpar_telefones, expandir_caracteristicas
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-PARENT_DIR = os.path.dirname(BASE_DIR)
-arquivo_csv = os.path.join(PARENT_DIR, "resultados", "imoveis.csv") # (DIRETORIO, PASTA, ARQUIVO)
-
-df = pd.read_csv(arquivo_csv)
+DATA_DIR = os.path.join(BASE_DIR, "..", "..", "data")  # Volta dois níveis
+arquivo_csv = os.path.join(DATA_DIR, "raw", "resultados", "imoveis.csv")
 
 
 df = limpar_area(df, "area_util")

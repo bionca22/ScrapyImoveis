@@ -1,3 +1,10 @@
+import os
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+DATA_RAW = BASE_DIR / "data" / "raw"
+arquivo_csv = DATA_RAW / "resultados" / "imoveis.csv"
+
 # Scrapy settings for df_imoveis_urls project
 #
 # For simplicity, this file contains only settings considered important or
@@ -9,9 +16,8 @@
 
 BOT_NAME = "df_imoveis_urls"
 
-SPIDER_MODULES = ["df_imoveis_urls.spiders"]
-NEWSPIDER_MODULE = "df_imoveis_urls.spiders"
-
+SPIDER_MODULES = ['src.spiders']
+NEWSPIDER_MODULE = 'src.spiders'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = "df_imoveis_urls (+http://www.yourdomain.com)"
