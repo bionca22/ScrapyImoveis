@@ -99,3 +99,12 @@ CONCURRENT_REQUESTS_PER_DOMAIN = 8
 # Set settings whose default value is deprecated to a future-proof value
 TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 FEED_EXPORT_ENCODING = "utf-8"
+
+
+ITEM_PIPELINES = {
+    'pipelines.SupabasePipeline': 300,
+}
+
+# Configurações de Log
+LOG_LEVEL = 'INFO'
+LOG_FORMAT = '%(asctime)s [%(name)s] %(levelname)s: %(message)s'

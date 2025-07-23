@@ -1,30 +1,19 @@
 import scrapy
 import re
-import pandas as pd
+import json 
 from pathlib import Path
 
 class ExtrairInfoSpider(scrapy.Spider):
-
-    # COMANDO PARA EXECUTAR A SPIDER:
-    #
-    #   scrapy crawl extrair_info -o resultados/imoveis.csv
 
     name = "extrair_info"
 
     allowed_domains = ["www.dfimoveis.com.br"]
     
-    ##df = pd.read_csv("../../data/raw/links_imoveis.txt", header=None, names=["links"]).tolist()
-    ##df = pd.read_csv("../../data/raw/links_imoveis.txt", header=None) 
-    ##start_urls = df[0].tolist()
-
-    ## with open("../../data/raw/links_imoveis.txt", "r") as f:
-    ##     start_urls = [url.strip() for url in f.readlines()]
-
     BASE_DIR = Path(__file__).resolve().parent.parent.parent
     DATA_DIR = BASE_DIR / "data" / "raw"
     links_file = DATA_DIR / "links_imoveis.txt"
 
-# Leitura correta
+    #Leitura correta
     with open(links_file, 'r') as f:
         start_urls = [line.strip() for line in f]
 
@@ -33,7 +22,8 @@ class ExtrairInfoSpider(scrapy.Spider):
             telefone_textos = response.css("h2.telefone *::text").getall()
             telefone_completo = " ".join(telefone_textos)
             telefone_formatado = re.sub(r"[^0-9()\-\s]", "", telefone_completo).strip()
-
+            descricao_lista = [desc.replace(";", "") for desc in response.css("p.texto-descricao::text").getall()]
+            
 
             yield {
                 
@@ -57,7 +47,7 @@ class ExtrairInfoSpider(scrapy.Spider):
                 "creci": response.css("div.col-8.col-md-5 small::text").re_first(r"\d+", "Não encontrado"),
                 "whatsapp": response.css("a.FalarComOAnunciantePeloWhatsapp::attr(data-link)").re_first(r"phone=(\d+)&"),
                 "telefone": telefone_formatado,
-                "publicado_dias:":response.css("h6:contains('Publicado há:') small::text").get(default="Não encontrado").strip(),
+                "publicado_dias":response.css("h6:contains('Publicado há:') small::text").get(default="Não encontrado").strip(),
                 
                 #Detalhes
                 "aceita_financiamento": response.css(".row h6:contains('Aceita Financiamento:') small::text").get(default="Não encontrado").strip(),
@@ -69,8 +59,5 @@ class ExtrairInfoSpider(scrapy.Spider):
                 "unidades_andar" : response.css(".row h6:contains('Unidades no Andar:') small::text").get(default="Não encontrado").strip(),
 
                 #Descrição
-                "titulo" : response.css("h6.mobile-h6.mb-0::text").get(),
-                "descricao": [descricao.replace(";", "") for descricao in response.css("p.texto-descricao::text").getall()],
-                "url_origem": response.url
-
+                "descricao": json.dumps(descricao_lista, ensure_ascii=False),
             }
