@@ -101,8 +101,8 @@ TWISTED_REACTOR = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
 FEED_EXPORT_ENCODING = "utf-8"
 
 
-ITEM_PIPELINES = {
-    'pipelines.SupabasePipeline': 300,
+ITEM_PIPELINE = {
+    'pipeline.SupabasePipeline': 300,
 }
 
 # Configurações de Log
