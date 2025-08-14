@@ -7,22 +7,20 @@ class ExtrairUrlsSpider(scrapy.Spider):
     name = "extrair_urls"
     
     base_url = "https://www.dfimoveis.com.br/venda/df/ceilandia/ceilandia-norte/casa"
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # Define o caminho absoluto do arquivo de saída
-        self.output_file = (
-            Path(__file__).resolve().parent.parent.parent / 
-            "data" / 
-            "raw" / 
-            f"urls_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
-        )
-        
-        # Garante que o diretório existe
-        self.output_file.parent.mkdir(parents=True, exist_ok=True)
+    
+    # Configuração de saída automática
+    custom_settings = {
+        'FEEDS': {
+            'data/raw/urls_%(time)s.json': {
+                'format': 'json',
+                'encoding': 'utf8',
+                'indent': 4,
+                'overwrite': True
+            }
+        }
+    }
 
     def start_requests(self):
-        self.logger.info(f"Os resultados serão salvos em: {self.output_file}")
         yield scrapy.Request(url=self.base_url, callback=self.parse, meta={"pagina": 1})
 
     def parse(self, response):
@@ -54,8 +52,3 @@ class ExtrairUrlsSpider(scrapy.Spider):
             callback=self.parse,
             meta={"pagina": proxima_pagina}
         )
-
-    def closed(self, reason):
-        """Método chamado quando a spider fecha"""
-        self.logger.info(f"Arquivo final gerado em: {self.output_file}")
-        print(f"\n✅ Processo concluído! Arquivo salvo em:\n{self.output_file}\n")
